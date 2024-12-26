@@ -8,67 +8,55 @@ This table contains main data about all mails in the game.
 
 **Table Structure**
 
-| Field               | Type     | Attributes | Key | Null | Default | Extra | Comment                            |
-| ------------------- | -------- | ---------- | --- | ---- | ------- | ----- | ---------------------------------- |
-| [id][1]             | INT      | UNSIGNED   | PRI | NO   | 0       |       | Identifier                         |
-| [messageType][2]    | TINYINT  | UNSIGNED   |     | NO   | 0       |       |                                    |
-| [stationery][3]     | TINYINT  | UNSIGNED   |     | NO   | 41      |       |                                    |
-| [mailTemplateId][4] | SMALLINT | UNSIGNED   |     | NO   | 0       |       |                                    |
-| [sender][5]         | INT      | UNSIGNED   |     | NO   | 0       |       | Character Global Unique Identifier |
-| [receiver][6]       | INT      | UNSIGNED   |     | NO   | 0       |       | Character Global Unique Identifier |
-| [subject][7]        | LONGTEXT | SIGNED     |     | YES  |         |       |                                    |
-| [body][8]           | LONGTEXT | SIGNED     |     | YES  |         |       |                                    |
-| [has_items][9]      | TINYINT  | UNSIGNED   |     | NO   | 0       |       |                                    |
-| [expire_time][10]   | INT      | UNSIGNED   |     | NO   | 0       |       |                                    |
-| [deliver_time][11]  | INT      | UNSIGNED   |     | NO   | 0       |       |                                    |
-| [money][12]         | INT      | UNSIGNED   |     | NO   | 0       |       |                                    |
-| [cod][13]           | INT      | UNSIGNED   |     | NO   | 0       |       |                                    |
-| [checked][14]       | TINYINT  | UNSIGNED   |     | NO   | 0       |       |                                    |
-| [auctionId][14]     | INT      | UNSIGNED   |     | NO   | 0       |       |                                    |
-
-[1]: #id
-[2]: #messagetype
-[3]: #stationery
-[4]: #mailtemplateid
-[5]: #sender
-[6]: #receiver
-[7]: #subject
-[8]: #body
-[9]: #hasitems
-[10]: #expiretime
-[11]: #delivertime
-[12]: #money
-[13]: #cod
-[14]: #checked
-[15]: #auctionid
+| Field                             | Type     | Attributes | Key | Null | Default | Extra | Comment                            |
+| --------------------------------- | -------- | ---------- | --- | ---- | ------- | ----- | ---------------------------------- |
+| [id](#id)                         | INT      | UNSIGNED   | PRI | NO   | 0       |       | Identifier                         |
+| [messageType](#messagetype)       | TINYINT  | UNSIGNED   |     | NO   | 0       |       |                                    |
+| [stationery](#stationery)         | TINYINT  | UNSIGNED   |     | NO   | 41      |       |                                    |
+| [mailTemplateId](#mailtemplateid) | SMALLINT | UNSIGNED   |     | NO   | 0       |       |                                    |
+| [sender](#sender)                 | INT      | UNSIGNED   |     | NO   | 0       |       | Character Global Unique Identifier |
+| [receiver](#receiver)             | INT      | UNSIGNED   |     | NO   | 0       |       | Character Global Unique Identifier |
+| [subject](#subject)               | LONGTEXT | SIGNED     |     | YES  |         |       |                                    |
+| [body](#body)                     | LONGTEXT | SIGNED     |     | YES  |         |       |                                    |
+| [has_items](#hasitems)            | TINYINT  | UNSIGNED   |     | NO   | 0       |       |                                    |
+| [expire_time](#expiretime)        | INT      | UNSIGNED   |     | NO   | 0       |       |                                    |
+| [deliver_time](#delivertime)      | INT      | UNSIGNED   |     | NO   | 0       |       |                                    |
+| [money](#money)                   | INT      | UNSIGNED   |     | NO   | 0       |       |                                    |
+| [cod](#cod)                       | INT      | UNSIGNED   |     | NO   | 0       |       |                                    |
+| [checked](#checked)               | TINYINT  | UNSIGNED   |     | NO   | 0       |       |                                    |
+| [auctionId](#checked)             | INT      | UNSIGNED   |     | NO   | 0       |       |                                    |
 
 **Description of the fields**
 
 ### id
 
-This field contains unique ID of any messages.
-
-Don't have autoincrement !!!
+This field contains unique ID of all mails/messages.
 
 ### messageType
 
--   0 = Normal
--   1 = doesn't exist
--   2 = Auction
--   3 = Creature
--   4 = Gameobject
--   5 = Item
+| ID  | Name            | Description                 |
+| --- | --------------- | --------------------------- |
+| 0   | MAIL_NORMAL     |
+| 2   | MAIL_AUCTION    | Sent by Auction House       |
+| 3   | MAIL_CREATURE   | Sent by a NPC               |
+| 4   | MAIL_GAMEOBJECT | Sent by an Object           |
+| 5   | MAIL_CALENDAR   | Calendar Event Notification |
+
+Note: ID `1` doesn't exist.
 
 ### stationery
 
-This field can contain these values:
+This field can contain these values and defines the background texture of the mail:
 
--   1 = Test
--   41 = Normal mail layout
--   61 = GM (Blizzard)
--   62 = Auction
--   64 = VAL (???)
--   65 = CHR (???)
+| ID  | Name                    | Description              |
+| --- | ----------------------- | ------------------------ |
+| 1   | MAIL_STATIONERY_TEST    | Test Background          |
+| 41  | MAIL_STATIONERY_DEFAULT | Normal Background        |
+| 61  | MAIL_STATIONERY_GM      | Blizzard / GM Background |
+| 62  | MAIL_STATIONERY_AUCTION | Auction Background       |
+| 64  | MAIL_STATIONERY_VAL     | Valentine's Background   |
+| 65  | MAIL_STATIONERY_CHR     | Christmas's Background   |
+| 67  | MAIL_STATIONERY_ORP     | Orphan's Background      |
 
 ### mailTemplateId
 
@@ -76,25 +64,33 @@ Id from MailTemplate.dbc
 
 ### sender
 
-In this field is entered sender [character.guid](character#guid).
+This refers to the Unique ID of the sender from the possible entries below:
+
+- [auctionhouse.id](auctionhouse#id)
+- [calendar_events.id](calendar_events#id)
+- [character.guid](character#guid)
+- [creature_template.entry](creature_template#entry)
+- [gameobject_template.entry](gameobject_template#entry)
+
+Note: ID `0` is used when a unknown sender case.
 
 ### receiver
 
-Here is receiver's [character.guid](character#guid).
+This refers to [character.guid](character#guid) of the player receiving.
 
 ### subject
 
-Here is stored mail subject.
+Here is stored mail's subject.
 
-If [stationery][3] is 62, subject has formatted data:
+If [stationery](#stationery) value is `62` it will be stored like this:
 
-`itemEntry:0:response:lotId:itemCount`
+Example: `14047:0:1:2:5`
 
--    **itemEntry**: entry field from item_template table
+This would be item `14047` (Runecloth) : `0` (always 0) : `1` (Auction won) : `2` (Auction House ID) : `5` (Quanity of 5 Runecloths)
 
--    0: allways 0
+Format: [item_template.entry](item_template#entry) : `0` : `<Auction Message Flag>` : [auctionhouse.id](auctionhouse#id) : `<Amount of the Item>`
 
--    **response**: Flag from 0 to 6
+#### Auction Message Flag
 
 | Flag | Comment                     |
 | ---- | --------------------------- |
@@ -106,10 +102,6 @@ If [stationery][3] is 62, subject has formatted data:
 | 5    | AUCTION_CANCELED            |
 | 6    | AUCTION_SALE_PENDING        |
 
--    **lotId**: id field from auctionhouse table
-
--    **itemCount**: amount of item at this Lot
-
 
 ### body
 
@@ -119,23 +111,21 @@ If [stationery][3] is 62, body has formatted data:
 
 `hexID:bid:buyout:deposit:cut:delay:eta`
 
--    **hexID**: hex value of itemowner's GUID (guid field from characters table)
+- **hexID**: hex value of itemowner's GUID (guid field from characters table)
 
--    **bid**: ending bid for this lot
+- **bid**: ending bid for this lot
 
--    **buyout**: buyout price of lot
+- **buyout**: buyout price of lot
 
--    **deposit**: amount of money which will be taken by auctionhouse and returned then auction ends
+- **deposit**: amount of money which will be taken by auctionhouse and returned then auction ends
 
--    **cut**: Commission fee. Will be taken by auctionhouse then auction ends
+- **cut**: Commission fee. Will be taken by auctionhouse then auction ends
 
--    **delay**: time in seconds to delay mail with money for successfully solded lot
+- **delay**: time in seconds to delay mail with money for successfully solded lot
 
--    **eta**: packed time to next mail whth money which appears in mail heder and body of notification mail
+- **eta**: packed time to next mail whth money which appears in mail heder and body of notification mail
 
 This formatted data seen only in mail with notification about successful auction or about pending mail with money.
-
-
 
 ### has_items
 
@@ -143,13 +133,13 @@ Default: 0,
 
 When is set to 1, that mail can contain items.
 
-For items look at [mail\_items](mail_items) table.
+For items look at [mail_items](mail_items) table.
 
-### expire\_time
+### expire_time
 
 Here is timestamp which stores date for auto-return mail to sender or delete if [stationery][3] is 62 (AuctionHouse).
 
-### deliver\_time
+### deliver_time
 
 Here is timestamp which stores date when mail must be delivered to receiver. Can be delayed mails from AuctionHouse.
 
@@ -179,7 +169,7 @@ when is set to 1, that field \`money\` stores gold for COD.
 Only if [stationery][3] is 62.
 
 Lot id from AuctionHouse. Can be negative vector in case of delayed mail with money sended by Auction to Lot-owner.
-For example: 
+For example:
 
 [auctionId][14] = 777 : mail to Lot-owner, contains money for sended Lot id 777. Delivered money.
 
