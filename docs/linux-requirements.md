@@ -42,19 +42,22 @@ Remember that if you are using the `root` user, it is not necessary to use `sudo
 
 1. Visit the [MySQL APT repository](https://dev.mysql.com/downloads/repo/apt/) page to verify and download the latest script version.
 ```sh
-export MYSQL_APT_CONFIG_VERSION=0.8.33-1
+export MYSQL_APT_CONFIG_VERSION=$(curl -sL https://dev.mysql.com/downloads/repo/apt/ | grep -oP 'mysql-apt-config_\K[0-9.]+-[0-9]+' | head -n 1)
+echo $MYSQL_APT_CONFIG_VERSION
 ```
+If nothing wrong happend you will see example: `0.8.33-1` in your terminal
 
 1. Download the latest MySQL repository information package.
 
 ```sh
 wget https://dev.mysql.com/get/mysql-apt-config_${MYSQL_APT_CONFIG_VERSION}_all.deb
+wget "https://dev.mysql.com/downloads/gpg/?file=mysql-apt-config_${MYSQL_APT_CONFIG_VERSION}_all.deb&p=37" -O mysql-apt-config_${MYSQL_APT_CONFIG_VERSION}_all.deb.asc
 ```
 
 1. (Recommended) Verify config authenticity. If you encounter any issues with this step, please refer to: https://dev.mysql.com/doc/refman/8.4/en/checking-gpg-signature.html
 ```sh
-wget "https://dev.mysql.com/downloads/gpg/?file=mysql-apt-config_${MYSQL_APT_CONFIG_VERSION}_all.deb&p=37" -O mysql-apt-config_${MYSQL_APT_CONFIG_VERSION}_all.deb.asc
-gpg --keyserver pgp.mit.edu --recv-keys A8D3785C
+KEY_FINGERPRINT=$(gpg --dry-run --keyid-format LONG --verify mysql-apt-config_${MYSQL_APT_CONFIG_VERSION}_all.deb.asc 2>&1 | grep "using RSA key" | awk '{print $NF}')
+gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys "$KEY_FINGERPRINT"
 gpg --verify mysql-apt-config_${MYSQL_APT_CONFIG_VERSION}_all.deb.asc mysql-apt-config_${MYSQL_APT_CONFIG_VERSION}_all.deb
 rm -v mysql-apt-config_${MYSQL_APT_CONFIG_VERSION}_all.deb.asc
 ```
