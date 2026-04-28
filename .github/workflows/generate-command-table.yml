@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  generate-aowow-db:
+  generate-command-table:
     permissions: write-all
     runs-on: ubuntu-24.04
     steps:
@@ -17,8 +17,6 @@ jobs:
           git clone https://github.com/azerothcore/acore-docker
           cd acore-docker
           docker compose up -d
-          cd ../setup/
-          bash generate-db.sh
           cd ..
           mysqldump -u root -ppassword -P 63306 -h 127.0.0.1 acore_world command > command_table.sql
           zip command_table.sql.zip command_table.sql
